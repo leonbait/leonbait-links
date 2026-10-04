@@ -8,17 +8,6 @@ const LINKS = {
   discord: "https://discord.gg/eVayB8UmK2"
 };
 
-
-const APP_LINKS = {
-  youtube: "youtube://www.youtube.com/@leonbait",
-  instagram: "instagram://user?username=byleonbait",
-  facebook: "fb://profile/",
-  tiktok: "snssdk1233://user/profile/leonbait",
-  x: "twitter://user?screen_name=leonbait",
-  discord: "discord://-/invite/eVayB8UmK2",
-  twitch: "twitch://channel/leonbait"
-};
-
 document.addEventListener("DOMContentLoaded", () => {
   const year = document.getElementById("year");
 
@@ -26,13 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
     year.textContent = new Date().getFullYear();
   }
 
-  
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   document.querySelectorAll("[data-link]").forEach((element) => {
     const key = element.dataset.link;
     const webUrl = LINKS[key];
-    const appUrl = APP_LINKS[key];
 
     if (!webUrl || webUrl === "#") {
       element.href = "#";
@@ -47,20 +35,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
     element.classList.remove("is-disabled");
 
-   
-    if (!isMobile || !appUrl) {
-      element.href = webUrl;
+  
+    if (isAndroid) {
+      element.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        if (key === "youtube") {
+         
+          window.location.href =
+            "intent://www.youtube.com/@leonbait#Intent;scheme=https;package=com.google.android.youtube;end";
+
+      
+          setTimeout(() => {
+            window.location.href = webUrl;
+          }, 1500);
+
+          return;
+        }
+
+        if (key === "twitch") {
+          window.location.href = "twitch://channel/leonbait";
+
+          setTimeout(() => {
+            window.location.href = webUrl;
+          }, 1500);
+
+          return;
+        }
+
+        window.location.href = webUrl;
+      });
+
       return;
     }
 
-   
-    element.href = appUrl;
+    if (isIOS) {
+      element.addEventListener("click", (event) => {
+        event.preventDefault();
 
-    element.addEventListener("click", () => {
-      
-      setTimeout(() => {
+        if (key === "youtube") {
+          window.location.href = "youtube://www.youtube.com/@leonbait";
+
+          setTimeout(() => {
+            window.location.href = webUrl;
+          }, 1500);
+
+          return;
+        }
+
         window.location.href = webUrl;
-      }, 1200);
-    });
+      });
+
+      return;
+    }
+
+    element.href = webUrl;
   });
 });
